@@ -1,18 +1,54 @@
 import { useState } from "react";
+import List from "./components/List";
 
 const App = () => {
-  let Time = new Date().toLocaleTimeString();
-
-  const [cTime, setCtime] = useState(Time);
-
-  function UpdateTime() {
-    Time = new Date().toLocaleTimeString();
-    setCtime(Time);
-  }
-  setInterval(UpdateTime, 1000);
+  const [inputList, setInputList] = useState("");
+  const [addItem, setAddItem] = useState([]);
+  
+  const InputEvent = (event) => {
+    const List = event.target.value;
+    setInputList(List);
+  };
+  const AddItems = () => {
+    setAddItem((oldItems) => {
+      return [...oldItems, inputList];
+    });
+    setInputList("");
+  };
+  const deleteItem = (id) => {
+    console.log("clicked");
+    setAddItem((oldItem) => {
+      return oldItem.filter((arrElement, index) => {
+        return index !== id;
+      });
+    });
+  };
   return (
     <>
-      <h1>{cTime}</h1>
+      <div className="main_div">
+        <div className="center_div">
+          <br />
+          <h1>ToDo List</h1>
+          <br />
+          <input
+            type="text"
+            placeholder="Add a Items"
+            onChange={InputEvent}
+            value={inputList}
+          />
+          <button onClick={AddItems}> + </button>
+          <ol>
+            {addItem.map((itemval, index) => (
+              <List
+                key={index}
+                id={index}
+                ItemValue={itemval}
+                onSelect={deleteItem}
+              />
+            ))}
+          </ol>
+        </div>
+      </div>
     </>
   );
 };
